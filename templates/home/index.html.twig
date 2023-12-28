@@ -1,0 +1,44 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Главная страница{% endblock %}
+
+{% block body %}
+<style>
+    .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
+    .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
+</style>
+
+
+
+<div class="example-wrapper">
+    {% if app.user %}
+        <a href="{{ path('admin.index')}}" class="btn btn-primary">Личный кабинет</a>
+        <a href="{{ path('app_logout')  }}" class="btn btn-primary">Выйти</a>
+    {% else %}
+        <a href="/register" class="btn btn-primary">Регистрация</a>
+        <a href="{{ path('admin.index')}}" class="btn btn-primary">Авторизоваться</a>
+    {% endif %}
+
+    {{ form_start(form, {attr: {"class": "d-inline"}}) }}
+    {{ form_widget(form) }}
+    <button class="btn btn-primary">Найти</button>
+    {{ form_end(form) }}
+
+    {% for item in articles %}
+        <article>
+            <h2><a href="{{ path('article.show', {'article': item.id}) }}">{{ item.title }}</a></h2>
+{#            <div class="article-content">#}
+{#                {{ item.body|raw|nl2br }}#}
+{#            </div>#}
+            <div>
+                Дата создания: {{ item.createdAt| date('d.m.Y H:i:s') }} , Автор: {{ item.author.email }}
+                <a href="{{ path('app_article_edit', {'id': item.id}) }}">Редактировать</a>
+            </div>
+        </article>
+    {% else %}
+        <div>Ничего не нашлось</div>>
+    {% endfor %}
+
+    {{ pagerfanta(articles)}}
+</div>
+{% endblock %}
